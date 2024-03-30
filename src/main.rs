@@ -15,7 +15,7 @@ use entities::prelude::*;
 use sea_orm::*;
 use setup::set_up_db;
 
-#[get("/test")]
+#[get("/getAllUsers")]
 async fn test(db: &State<DatabaseConnection>) -> Json<Vec<String>> {
     let db = db as &DatabaseConnection;
 
