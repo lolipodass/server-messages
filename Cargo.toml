@@ -11,4 +11,8 @@ sea-orm = { version = "0.12.15", features = [
     "runtime-tokio-rustls",
     "macros",
 ] }
-rocket = "0.5.0"
+rocket = { version = "0.5.0", features = ["json"] }
+
+[dependencies.rocket_dyn_templates]
+version = "0.1.0-rc.2"
+features = ["tera"]

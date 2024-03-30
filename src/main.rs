@@ -1,15 +1,15 @@
+#[macro_use]
+extern crate rocket;
+
+use rocket::serde::json::Json;
+use rocket::State;
+
 mod entities;
 mod setup;
 
-use entities::{prelude::*, *};
-use rocket::{
-    fs::{relative, FileServer},
-    *,
-};
-use rocket_dyn_templates::Template;
+use entities::prelude::*;
+
 use sea_orm::*;
-use sea_orm_migration::MigratorTrait;
-use serde_json::json;
 use setup::set_up_db;
 
 #[get("/test")]
@@ -34,13 +34,5 @@ async fn rocket() -> _ {
         Err(err) => panic!("{}", err),
     };
 
-    rocket::build()
-        .manage(db)
-        .mount("/", FileServer::from(relative!("/static")))
-        .mount(
-            "/",
-            routes![index, bakeries, bakery_by_id, new, new_bakery, reset],
-        )
-        .register("/", catchers![not_found])
-        .attach(Template::fairing())
+    rocket::build().manage(db).mount("/", routes![test])
 }
