@@ -2,7 +2,7 @@ use sea_orm::*;
 
 // Replace with your database URL and database name
 const DATABASE_URL: &str = "postgres://postgres:1122@localhost:5505";
-const DB_NAME: &str = "safety";
+const DB_NAME: &str = "postgres";
 
 pub(super) async fn set_up_db() -> Result<DatabaseConnection, DbErr> {
     let db = Database::connect(DATABASE_URL).await?;
@@ -19,16 +19,16 @@ pub(super) async fn set_up_db() -> Result<DatabaseConnection, DbErr> {
             Database::connect(&url).await?
         }
         DbBackend::Postgres => {
-            db.execute(Statement::from_string(
-                db.get_database_backend(),
-                format!("DROP DATABASE IF EXISTS \"{}\";", DB_NAME),
-            ))
-            .await?;
-            db.execute(Statement::from_string(
-                db.get_database_backend(),
-                format!("CREATE DATABASE \"{}\";", DB_NAME),
-            ))
-            .await?;
+            // db.execute(Statement::from_string(
+            //     db.get_database_backend(),
+            //     format!("DROP DATABASE IF EXISTS \"{}\";", DB_NAME),
+            // ))
+            // .await?;
+            // db.execute(Statement::from_string(
+            //     db.get_database_backend(),
+            //     format!("CREATE DATABASE \"{}\";", DB_NAME),
+            // ))
+            // .await?;
 
             let url = format!("{}/{}", DATABASE_URL, DB_NAME);
             Database::connect(&url).await?
