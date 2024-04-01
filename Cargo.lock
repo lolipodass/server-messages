@@ -2292,6 +2292,7 @@ dependencies = [
  "rocket",
  "rocket_dyn_templates",
  "sea-orm",
+ "serde",
 ]
 
 [[package]]

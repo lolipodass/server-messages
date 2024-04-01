@@ -1,8 +1,8 @@
 #[macro_use]
 extern crate rocket;
+use entities::user::Model;
 use rocket::http::Status;
 use rocket::response::status;
-use sea_orm::Database;
 
 use rocket::serde::json::Json;
 use rocket::State;
@@ -14,6 +14,30 @@ use entities::prelude::*;
 
 use sea_orm::*;
 use setup::set_up_db;
+
+#[post("/addUser", data = "<user_data>", format = "json")]
+async fn add_user(
+    db: &State<DatabaseConnection>,
+    user_data: Json<Model>,
+) -> Result<Json<String>, Status> {
+    let db = db as &DatabaseConnection;
+    let user = entities::user::ActiveModel {
+        name: ActiveValue::set(user_data.name.clone()),
+        email: ActiveValue::set(user_data.email.clone()),
+        password: ActiveValue::set(user_data.password.clone()),
+        ..Default::default()
+    }
+    .insert(db)
+    .await;
+
+    match user {
+        Ok(_) => Ok(Json("User added successfully".to_string())),
+        Err(e) => {
+            eprintln!("Failed to add user: {}", e);
+            Err(Status::InternalServerError)
+        }
+    }
+}
 
 #[get("/getAllUsers")]
 async fn test(db: &State<DatabaseConnection>) -> Json<Vec<String>> {
@@ -63,5 +87,5 @@ async fn rocket() -> _ {
 
     rocket::build()
         .manage(db)
-        .mount("/", routes![test, check_connection])
+        .mount("/", routes![test, check_connection, add_user])
 }
