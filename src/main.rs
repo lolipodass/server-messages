@@ -3,6 +3,13 @@ extern crate rocket;
 use entities::user::Model;
 use rocket::http::Status;
 use rocket::response::status;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+use entities::message::{self, Model as Message};
+>>>>>>> 1ff8931 (add)
+>>>>>>> f52da21 (Add)
 
 use rocket::serde::json::Json;
 use rocket::State;
@@ -15,6 +22,78 @@ use entities::prelude::*;
 use sea_orm::*;
 use setup::set_up_db;
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+#[post("/addMessage", data = "<message_data>", format = "json")]
+pub async fn add_message(
+    db: &State<DatabaseConnection>,
+    message_data: Json<entities::message::Model>,
+) -> Result<Json<String>, Status> {
+    let db = db as &DatabaseConnection;
+
+    // Проверяем существование отправителя сообщения
+    let sender = User::find_by_id(message_data.sender_id)
+        .one(db)
+        .await;
+
+    match sender {
+        Ok(Some(_)) => {
+            // Если отправитель существует, продолжаем создание сообщения
+            let message = entities::message::ActiveModel {
+                sender_id: ActiveValue::set(message_data.sender_id),
+                receiver_id: ActiveValue::set(message_data.receiver_id),
+                message: ActiveValue::set(message_data.message.clone()),
+                ..Default::default()
+            }
+            .insert(db)
+            .await;
+
+            match message {
+                Ok(_) => Ok(Json("Message added successfully".to_string())),
+                Err(e) => {
+                    eprintln!("Failed to add message: {}", e);
+                    Err(Status::InternalServerError)
+                }
+            }
+        },
+        Ok(None) => {
+            // Если отправитель не найден, возвращаем ошибку
+            eprintln!("Sender not found");
+            Err(Status::BadRequest)
+        },
+        Err(e) => {
+            eprintln!("Failed to find sender: {}", e);
+            Err(Status::InternalServerError)
+        }
+    }
+}
+
+#[get("/getMessagesFromSender/<sender_id>")]
+pub async fn get_messages_from_sender(
+    db: &State<DatabaseConnection>,
+    sender_id: i32,
+) -> Json<Vec<String>> {
+    let db = db as &DatabaseConnection;
+
+    let messages = entities::message::Entity::find()
+        .filter(entities::message::Column::SenderId.eq(sender_id))
+        .all(db)
+        .await
+        .unwrap()
+        .into_iter()
+        .map(|m| m.message)
+        .collect::<Vec<String>>();
+
+    Json(messages)
+}
+
+
+
+>>>>>>> 1ff8931 (add)
+>>>>>>> f52da21 (Add)
 #[post("/addUser", data = "<user_data>", format = "json")]
 async fn add_user(
     db: &State<DatabaseConnection>,
@@ -78,6 +157,13 @@ async fn check_connection(
     }
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1ff8931 (add)
+>>>>>>> f52da21 (Add)
 #[launch]
 async fn rocket() -> _ {
     let db = match set_up_db().await {
@@ -87,5 +173,13 @@ async fn rocket() -> _ {
 
     rocket::build()
         .manage(db)
+<<<<<<< HEAD
         .mount("/", routes![test, check_connection, add_user])
+=======
+<<<<<<< HEAD
+        .mount("/", routes![test, check_connection, add_user])
+=======
+        .mount("/", routes![test, check_connection, add_user,add_message,get_messages_from_sender])
+>>>>>>> 1ff8931 (add)
+>>>>>>> f52da21 (Add)
 }

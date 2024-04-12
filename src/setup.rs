@@ -1,8 +1,18 @@
 use sea_orm::*;
 
 // Replace with your database URL and database name
+<<<<<<< HEAD
 const DATABASE_URL: &str = "postgres://postgres:1122@localhost:5505";
 const DB_NAME: &str = "postgres";
+=======
+<<<<<<< HEAD
+const DATABASE_URL: &str = "postgres://postgres:1122@localhost:5505";
+const DB_NAME: &str = "postgres";
+=======
+const DATABASE_URL: &str = "postgres://postgres:123123@localhost:5432"; 
+const DB_NAME: &str = "postr";
+>>>>>>> 1ff8931 (add)
+>>>>>>> f52da21 (Add)
 
 pub(super) async fn set_up_db() -> Result<DatabaseConnection, DbErr> {
     let db = Database::connect(DATABASE_URL).await?;

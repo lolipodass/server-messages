@@ -1,3 +1,13 @@
 target
 .vscode
+<<<<<<< HEAD
 .env
+=======
+<<<<<<< HEAD
+.env
+=======
+.env
+Cargo.lock
+migration/Cargo.lock
+>>>>>>> 1ff8931 (add)
+>>>>>>> f52da21 (Add)
